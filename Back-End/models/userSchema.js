@@ -9,24 +9,24 @@ const userSchema = {
     },
     firstName:{
         type:'string',
-        required:true,
+        required:[true, "Please add a firstName"],
         min:4,
         max:255
     },
     lastName:{
         type:'string',
-        required:true,
+        required:[true, "Please add a lastName"],
         min:4,
         max:255
     },
     email:{
         type:'string',
-        required:true,
+        required:[true, "Please add an email"],
         unique:true
     },
     password:{
         type:'string',
-        required:true
+        required:[true, "Please add a password"],
     },
     role:{
         type:'string',

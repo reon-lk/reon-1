@@ -91,6 +91,7 @@ exports.mypage = async (req, res) => {
     try{
         const ReonAuthJWT = req.cookies.ReonAuthJWT;
         const checkUserVerify = await userVerify.userVerify2(ReonAuthJWT);
+        
         if (checkUserVerify.isPage == 1) {
             res.send("You already have REON page!"); // redirect to user page for owner page (/user/myPage)
         } else {
@@ -122,13 +123,15 @@ exports.createMyPage = async(req, res) => {
                     uId:checkUserVerify.uId,
                     pageName:req.body.pageName,
                     phone:req.body.phone,
+                    address: req.body.address,
                     link:mainId + utcTimestamp,
-                    statuses:"0",
+                    statuses:"1",
                     statusComment:"User Create",
                     createDate:utcTimestamp,
                     updateDate:utcTimestamp,
                     tempPageName:req.body.pageName,
                     tempPhone:req.body.phone,
+                    tempAddress: req.body.address,
                     tempLink:mainId + utcTimestamp
                 });
                         

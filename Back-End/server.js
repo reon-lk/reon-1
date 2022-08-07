@@ -8,6 +8,8 @@ dotenv.config();
 
 app.use(cookieParser());
 app.use(express.json());
+app.use(express.urlencoded({extended:false}));
+
 
 const port = 3000;
 
@@ -17,8 +19,11 @@ connectDB();
 
 // Routes
 const userRoutes = require("./routes/userRoutes");
+const pageRoutes = require("./routes/pageRoutes");
 
 app.use("/", userRoutes);
+app.use("/mypage", pageRoutes);
+
 
 app.listen(port, () => {
     console.log(`Server is listening on port ` + port);

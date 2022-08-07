@@ -14,14 +14,18 @@ const pageSchema = {
     },
     pageName:{
         type:'string',
-        required:true,
+        required:[true, "Please add a pageName"],
         min:4,
         max:255
     },
     phone:{
         type:'string',
-        required:true,
+        required:[true, "Please add a phone number"],
         unique:true
+    },
+    address:{
+        type:'string',
+        required:[true, "Please add an address"]
     },
     link:{
         type:"string",
