@@ -17,8 +17,12 @@ connectDB();
 
 // Routes
 const userRoutes = require("./routes/userRoutes");
+const pageRoutes = require("./routes/pageRoutes");
+// const adminRoutes = require("./routes/adminRoutes");
 
 app.use("/", userRoutes);
+app.use("/mypage", pageRoutes);
+// app.use("/admin", userRoutes);
 
 app.listen(port, () => {
     console.log(`Server is listening on port ` + port);
