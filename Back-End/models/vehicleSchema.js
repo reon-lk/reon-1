@@ -17,7 +17,7 @@ const vehicleSchema = {
     },
     seats:{
         type:'string',
-        required:false
+        required:true
     },
     location:{
         type:'string',
@@ -28,6 +28,28 @@ const vehicleSchema = {
         required:true,
         
     },
+    tempCategory:{
+        type:'string',
+        required:true,
+    },
+    tempVehicleType:{
+        type:'string',
+        required:true,
+    },
+    tempSeats:{
+        type:'string',
+        required:true,
+    },
+    tempLocation:{
+        type:'string',
+        required:true,
+    },
+    tempVehicleName:{
+        type:'string',
+        required:true,
+    },
+
+
     
    
     statuses:{

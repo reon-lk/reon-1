@@ -87,16 +87,21 @@ exports.updateVehicle = async (req, res) => {
         if (!vehicle) {
             res.send("Vehicle not found")
           } 
-          
+          // res.json(vehicle)
+
+          const sucess = vehicle.pId == page.pId
+
+          // res.send(sucess)
       
-          if (page.pId !== vehicle.pId) {
+        if (!sucess) {
             res.send("user not authorized")
-          }
+        }
             
-          if (vehicle.statuses == 0) {
+        if (vehicle.statuses == 0) {
             res.send("vehicle is not approved");
           }
 
+          
           const updatedVehicle = await vehicleSchema.vehicleModel.findOneAndUpdate(
             { vId: req.params.vId },
             { $set: { tempCategory: req.body.category,
@@ -121,20 +126,26 @@ exports.deleteVehicle = async (req, res) => {
     const page = await pageSchema.pageModel.findOne({ uId: req.user.uId });
 
     try {
-        if (!vehicle) {
-            res.status(400);
-            throw new Error("Vehicle not found");
-          } else {
-          }
-      
-        //   if (vehicle.pId !== page.pId) {
-            
-        //     res.send("user not authorized")
-        //   }
-      
-          if (vehicle.statuses == 0) {
-            res.send("vehicle is not approved");
-          }
+      if (!page) {
+        res.send("page not found");
+    }
+    
+    if (!vehicle) {
+        res.send("Vehicle not found")
+      } 
+      // res.json(vehicle)
+
+      const sucess = vehicle.pId == page.pId
+
+      // res.send(sucess)
+  
+    if (!sucess) {
+        res.send("user not authorized")
+    }
+        
+    if (vehicle.statuses == 0) {
+        res.send("vehicle is not approved");
+      }
 
           const deletedVehicle = await vehicleSchema.vehicleModel.findOneAndUpdate(
             { vId: req.params.vId },
