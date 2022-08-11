@@ -3,6 +3,7 @@ const express = require("express");
 const userVerify = require("../helpers/userVerify");
 const userSchema = require("../models/userSchema");
 const pageSchema = require("../models/pageSchema");
+const hireSchema = require("../models/hireSchema");
 
 const {hashGenerate} = require("../helpers/hashing");
 const {hashValidator} = require("../helpers/hashing");
@@ -18,7 +19,7 @@ exports.signup = async (req, res) => {
             res.send(`Email address already exists!`);
         } else {
         const hashPassword = await hashGenerate(req.body.password);
-        var utcTimestamp = new Date().getTime();
+        const utcTimestamp = new Date().getTime();
             const user = new userSchema.userModel({
                 uId : mainId + utcTimestamp,
                 firstName : req.body.firstName,
@@ -78,3 +79,48 @@ exports.logout = (req, res) => {
     res.send('Logout Successfull!'); // redirect to home page (/)
     // res.redirect('/');
 };
+
+// all vehicles http request
+exports.vehicles = async (req, res) => {
+    const allVehicles = await pageSchema.vehicleModel.find({statuses:'0'});
+    res.send(allVehicles);
+};
+
+// a vehicle http request
+exports.vehicle = async (req, res) => {
+    const vehicle = await pageSchema.vehicleModel.findOne({vId:req.params.vId, statuses:'0'});
+    res.send(vehicle);
+};
+
+// hire a vehicle http request
+exports.hireVehicles = async (req, res) => {
+    try {
+        const ReonAuthJWT = req.cookies.ReonAuthJWT;
+        if (!ReonAuthJWT) {
+            res.send("Please Login!");
+        } else {
+            const checkUserVerify = await userVerify.userVerify2(ReonAuthJWT);
+            const vehicle = await pageSchema.vehicleModel.findOne({vId:req.params.vId, statuses:'0'});
+            const utcTimestamp = new Date().getTime();
+            const carHire = new hireSchema.carHireModel({
+                hId:mainId + utcTimestamp,
+                vId:vehicle.vId,
+                uId:checkUserVerify.uId,
+                to:req.body.to,
+                from:req.body.from,
+                time:req.body.time,
+                isAccept:'0',
+                acceptAmount:0,
+                acceptTime:'0',
+                isConform:'0',
+                conformTime:'0',
+                createDate:utcTimestamp
+            })
+            carHire.save();
+            res.send(`Hired successfull! Please wait for driver accept`); // redirect to home page (/)
+        }
+    } catch (error) {
+        res.send(error)
+    }
+    
+}

@@ -3,6 +3,7 @@ const express = require("express");
 const userVerify = require("../helpers/userVerify");
 const userSchema = require("../models/userSchema");
 const pageSchema = require("../models/pageSchema");
+const hireSchema = require("../models/hireSchema");
 
 const mainId = "7777";
 
@@ -110,6 +111,50 @@ exports.addVehicles = async (req, res) => {
         res.send(`Your vehicle added successfull! Please wait for admin approval`); // redirect to my page (/mypage)
 
     }catch(error){
+        res.send(error);
+    }
+};
+
+// all hire
+exports.allHires = async (req, res) => {
+    try {
+        const ReonAuthJWT = req.cookies.ReonAuthJWT;
+        const checkUserVerify = await userVerify.userVerify3(ReonAuthJWT);
+        const allHires = await hireSchema.carHireModel.find({pId:checkUserVerify.pId})
+        res.send(allHires);
+    } catch (error) {
+        res.send(error);
+    }
+};
+
+// hire
+exports.hire = async (req, res) => {
+    try {
+        const ReonAuthJWT = req.cookies.ReonAuthJWT;
+        const hireId = req.params.hId;
+        const checkUserVerify = await userVerify.userVerify4(ReonAuthJWT, hireId);
+        res.send(checkUserVerify);
+    } catch (error) {
+        res.send(error);
+    }
+};
+
+
+// hire
+exports.accHire = async (req, res) => {
+    try {
+        const ReonAuthJWT = req.cookies.ReonAuthJWT;
+        const hireId = req.params.hId;
+        const checkUserVerify = await userVerify.userVerify5(ReonAuthJWT, hireId);
+        const utcTimestamp = new Date().getTime();
+        const update = {
+            isAccept:"1",
+            acceptAmount:req.body.price,
+            acceptTime:utcTimestamp
+        }
+        const accept = await hireSchema.carHireModel.findOneAndUpdate({hId:checkUserVerify.hId}, update)
+        res.send('Hire accepted successful!');
+    } catch (error) {
         res.send(error);
     }
 };

@@ -8,7 +8,11 @@ const tokenGenerator = (email) => {
 const tokenValidator = (jwtToken) => {
     try{
         const data = jwt.verify(jwtToken, process.env.JWT_KEY);
-        return data;
+        if (!data) {
+            res.send(data);
+        } else {
+            return data;
+        }
     } catch (error) {
         return false;
     }
