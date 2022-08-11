@@ -2,10 +2,15 @@ const mongoose = require("mongoose");
 // //schema for vehicle
 
 const vehicleSchema = {
-    vId:Number,
+    vId:{
+        type:'string',
+        required:true,
+        unique:true
+    },
+    
     pId:{
-        type:Number,
-        
+        type:'string',
+        required:true,
     },
     category:{
         type:'string',

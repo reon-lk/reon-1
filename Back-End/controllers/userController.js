@@ -125,7 +125,7 @@ exports.createMyPage = async(req, res) => {
                     phone:req.body.phone,
                     address: req.body.address,
                     link:mainId + utcTimestamp,
-                    statuses:"1",
+                    statuses:"0",
                     statusComment:"User Create",
                     createDate:utcTimestamp,
                     updateDate:utcTimestamp,

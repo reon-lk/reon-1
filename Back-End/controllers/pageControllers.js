@@ -21,11 +21,15 @@ exports.getPage = async (req,res) =>{
             res.send("page not found");
           }
           if (page.statuses == 0) {
-            res.send("page is not approved");
+            res.status(202).send("page is not approved");
+          }
+
+          if (page.statuses == 2) {
+            res.status(401).send("page is blocked");
           }
           
       
-          const vehicles = await vehicleSchema.vehicleModel.find({ pId: page.pId });
+          const vehicles = await vehicleSchema.vehicleModel.find({ pId: page.pId, statuses: 1});
           res.json(vehicles); 
     } catch (error) {
         res.send(error)
@@ -43,7 +47,10 @@ exports.addVehicle = async (req, res) => {
             res.send("page not found");
           }
           if (page.statuses == 0) {
-            res.send("page is not approved");
+            res.status(401).send("page is not approved");
+          }
+          if (page.statuses == 2) {
+            res.status(401).send("page is blocked");
           }
 
           const vehicle = await vehicleSchema.vehicleModel.create({
@@ -54,7 +61,7 @@ exports.addVehicle = async (req, res) => {
             seats: req.body.seats,
             location: req.body.location,
             vehicleName: req.body.vehicleName,
-            statuses: "1",
+            statuses: "0",
             statusComment: "vehicle added",
             createDate: utcTimestamp,
             updateDate: utcTimestamp,
@@ -83,7 +90,15 @@ exports.updateVehicle = async (req, res) => {
         if (!page) {
             res.send("page not found");
         }
-        
+
+        if (page.statuses == 0) {
+          res.status(401).send("page is not approved");
+        }
+
+        if (page.statuses == 2) {
+          res.status(401).send("page is blocked");
+        }
+
         if (!vehicle) {
             res.send("Vehicle not found")
           } 
@@ -96,9 +111,20 @@ exports.updateVehicle = async (req, res) => {
         if (!sucess) {
             res.send("user not authorized")
         }
+          if (vehicle.statuses == 4 ) {
+            res.send("vehicle is not found");
+          }
             
-        if (vehicle.statuses == 0) {
+          if (vehicle.statuses == 0 ) {
             res.send("vehicle is not approved");
+          }
+
+          if (vehicle.statuses == 4 ) {
+            res.send("vehicle is not found");
+          }
+        
+        if (vehicle.statuses == 2) {
+            res.send("vehicle is blocked");
           }
 
           
@@ -108,7 +134,8 @@ exports.updateVehicle = async (req, res) => {
                 tempVehicleType: req.body.vehicleType,
                 tempSeats: req.body.seats,
                 tempLocation: req.body.location,
-                tempVehicleName: req.body.vehicleName} },
+                tempVehicleName: req.body.vehicleName,
+                statuses: "3"} },
             { new: true }
           );
 
@@ -147,9 +174,13 @@ exports.deleteVehicle = async (req, res) => {
         res.send("vehicle is not approved");
       }
 
+    if (vehicle.statuses == 2) {
+        res.send("vehicle is blocked");
+      }
+
           const deletedVehicle = await vehicleSchema.vehicleModel.findOneAndUpdate(
             { vId: req.params.vId },
-            { $set: { statuses: "0", statusComment: "vehicle deleted", updateDate: utcTimestamp } },
+            { $set: { statuses: "4", statusComment: "vehicle deleted", updateDate: utcTimestamp } },
             { new: true }
           );
           res.json(deletedVehicle);   
@@ -158,3 +189,4 @@ exports.deleteVehicle = async (req, res) => {
         res.send(error)
     }
 }
+

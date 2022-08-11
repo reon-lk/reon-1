@@ -17,7 +17,7 @@ const userAuth = async (req, res, next) => {
             res.status(401)
             throw new Error('Access denied') 
         }
-        if(existingUser.statuses == 0) {
+        if(existingUser.statuses == 2) {
             return("Your account is blocked!"); // redirect to home (/)
         } 
         if (existingUser.role == 1) {
