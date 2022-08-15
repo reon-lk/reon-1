@@ -2,191 +2,171 @@ const express = require("express");
 
 const userSchema = require("../models/userSchema");
 const pageSchema = require("../models/pageSchema");
-const vehicleSchema = require("../models/vehicleSchema")
+const vehicleSchema = require("../models/vehicleSchema");
+const hireSchema = require("../models/hireSchema");
 
 const mainId = "7777";
+const utcTimestamp = new Date().getTime();
 
 // Get page
-exports.getPage = async (req,res) =>{
-    const page = await pageSchema.pageModel.findOne({ uId: req.user.uId });
+exports.getPage = async (req, res) => {
+  const page = await pageSchema.pageModel.findOne({ uId: req.user.uId });
 
-    try {
-        if (req.user.isPage == 0) {
-            res.send(
-              "You don't have REON page! Go to '/myPage/create' for create new Page"
-            ); // redirect to create page for owner page (/mypage/create)
-            // res.redirect("/user/myPage/create");
-          }
-          if (!page) {
-            res.send("page not found");
-          }
-          if (page.statuses == 0) {
-            res.status(202).send("page is not approved");
-          }
-
-          if (page.statuses == 2) {
-            res.status(401).send("page is blocked");
-          }
-          
-      
-          const vehicles = await vehicleSchema.vehicleModel.find({ pId: page.pId, statuses: 1});
-          res.json(vehicles); 
-    } catch (error) {
-        res.send(error)
-    }
-}
+  try {
+    const vehicles = await vehicleSchema.vehicleModel.find({
+      pId: page.pId,
+      statuses: 1,
+    });
+    res.json(vehicles);
+  } catch (error) {
+    res.send(error);
+  }
+};
 
 //Add vehicle in the page
 
 exports.addVehicle = async (req, res) => {
-    const utcTimestamp = new Date().getTime();
+  try {
     const page = await pageSchema.pageModel.findOne({ uId: req.user.uId });
-    
-    try {
-        if (!page) {
-            res.send("page not found");
-          }
-          if (page.statuses == 0) {
-            res.status(401).send("page is not approved");
-          }
-          if (page.statuses == 2) {
-            res.status(401).send("page is blocked");
-          }
 
-          const vehicle = await vehicleSchema.vehicleModel.create({
-            vId: mainId + utcTimestamp,
-            pId: page.pId,
-            category: req.body.category,
-            vehicleType: req.body.vehicleType,
-            seats: req.body.seats,
-            location: req.body.location,
-            vehicleName: req.body.vehicleName,
-            statuses: "0",
-            statusComment: "vehicle added",
-            createDate: utcTimestamp,
-            updateDate: utcTimestamp,
-            tempCategory: req.body.category,
-            tempVehicleType: req.body.vehicleType,
-            tempSeats: req.body.seats,
-            tempLocation: req.body.location,
-            tempVehicleName: req.body.vehicleName
-            
-          });
+    const vehicle = await vehicleSchema.vehicleModel.create({
+      vId: mainId + utcTimestamp,
+      pId: page.pId,
+      category: req.body.category,
+      vehicleType: req.body.vehicleType,
+      seats: req.body.seats,
+      location: req.body.location,
+      vehicleName: req.body.vehicleName,
+      statuses: "0",
+      statusComment: "vehicle added",
+      createDate: utcTimestamp,
+      updateDate: utcTimestamp,
+      tempCategory: req.body.category,
+      tempVehicleType: req.body.vehicleType,
+      tempSeats: req.body.seats,
+      tempLocation: req.body.location,
+      tempVehicleName: req.body.vehicleName,
+    });
 
-          res.json(vehicle)
-    } catch (error) {
-        res.send(error)
-    }
-}
+    res.json(vehicle);
+  } catch (error) {
+    res.send(error);
+  }
+};
 
 //update Vehicle details
 
 exports.updateVehicle = async (req, res) => {
-    const vehicle = await vehicleSchema.vehicleModel.findOne({ vId: req.params.vId});
+  try {
+    const vehicle = await vehicleSchema.vehicleModel.findOne({
+      vId: req.params.vId,
+    });
     const page = await pageSchema.pageModel.findOne({ uId: req.user.uId });
 
-    try {
+    if (!vehicle) {
+      res.send("Vehicle not found");
+    } else if (vehicle.pId !== page.pId) {
+      res.send("user not authorized");
+    } else if (vehicle.statuses == 4) {
+      res.send("vehicle is not found");
+    } else if (vehicle.statuses == 0) {
+      res.send("vehicle is not approved");
+    } else if (vehicle.statuses == 2) {
+      res.send("vehicle is blocked");
+    } else {
+      const updatedVehicle = await vehicleSchema.vehicleModel.findOneAndUpdate(
+        { vId: req.params.vId },
+        {
+          $set: {
+            tempCategory: req.body.category,
+            tempVehicleType: req.body.vehicleType,
+            tempSeats: req.body.seats,
+            tempLocation: req.body.location,
+            tempVehicleName: req.body.vehicleName,
+            statuses: "3",
+          },
+        },
+        { new: true }
+      );
 
-        if (!page) {
-            res.send("page not found");
-        }
-
-        if (page.statuses == 0) {
-          res.status(401).send("page is not approved");
-        }
-
-        if (page.statuses == 2) {
-          res.status(401).send("page is blocked");
-        }
-
-        if (!vehicle) {
-            res.send("Vehicle not found")
-          } 
-          // res.json(vehicle)
-
-          const sucess = vehicle.pId == page.pId
-
-          // res.send(sucess)
-      
-        if (!sucess) {
-            res.send("user not authorized")
-        }
-          if (vehicle.statuses == 4 ) {
-            res.send("vehicle is not found");
-          }
-            
-          if (vehicle.statuses == 0 ) {
-            res.send("vehicle is not approved");
-          }
-
-          if (vehicle.statuses == 4 ) {
-            res.send("vehicle is not found");
-          }
-        
-        if (vehicle.statuses == 2) {
-            res.send("vehicle is blocked");
-          }
-
-          
-          const updatedVehicle = await vehicleSchema.vehicleModel.findOneAndUpdate(
-            { vId: req.params.vId },
-            { $set: { tempCategory: req.body.category,
-                tempVehicleType: req.body.vehicleType,
-                tempSeats: req.body.seats,
-                tempLocation: req.body.location,
-                tempVehicleName: req.body.vehicleName,
-                statuses: "3"} },
-            { new: true }
-          );
-
-         res.json(updatedVehicle);
-    } catch (error) {
-        res.send(error)
+      res.json(updatedVehicle);
     }
-}
+  } catch (error) {
+    res.send(error);
+  }
+};
 
 //delete vehicle
 
 exports.deleteVehicle = async (req, res) => {
-    const utcTimestamp = new Date().getTime();
-    const vehicle = await vehicleSchema.vehicleModel.findOne({ vId: req.params.vId});
+  try {
+    const vehicle = await vehicleSchema.vehicleModel.findOne({
+      vId: req.params.vId,
+    });
     const page = await pageSchema.pageModel.findOne({ uId: req.user.uId });
 
-    try {
-      if (!page) {
-        res.send("page not found");
-    }
-    
     if (!vehicle) {
-        res.send("Vehicle not found")
-      } 
-      // res.json(vehicle)
-
-      const sucess = vehicle.pId == page.pId
-
-      // res.send(sucess)
-  
-    if (!sucess) {
-        res.send("user not authorized")
+      res.send("Vehicle not found");
+    } else if (vehicle.pId !== page.pId) {
+      res.send("user not authorized");
+    } else if (vehicle.statuses == 4) {
+      res.send("vehicle is not found");
+    } else if (vehicle.statuses == 0) {
+      res.send("vehicle is not approved");
+    } else if (vehicle.statuses == 2) {
+      res.send("vehicle is blocked");
+    } else {
+      const deletedVehicle = await vehicleSchema.vehicleModel.findOneAndUpdate(
+        { vId: req.params.vId },
+        {
+          $set: {
+            statuses: "4",
+            statusComment: "vehicle is deleted",
+            updateDate: utcTimestamp,
+          },
+        },
+        { new: true }
+      );
+      res.json(deletedVehicle);
     }
-        
-    if (vehicle.statuses == 0) {
-        res.send("vehicle is not approved");
-      }
+  } catch (error) {
+    res.send(error);
+  }
+};
 
-    if (vehicle.statuses == 2) {
-        res.send("vehicle is blocked");
-      }
+exports.hireRequests = async (req, res) => {
+  // const page = await pageSchema.pageModel.findOne({ uId: req.user.uId });
+  const allHires = await hireSchema.carHireModel.find({ pId: req.page.pId });
+  res.send(allHires);
+};
 
-          const deletedVehicle = await vehicleSchema.vehicleModel.findOneAndUpdate(
-            { vId: req.params.vId },
-            { $set: { statuses: "4", statusComment: "vehicle deleted", updateDate: utcTimestamp } },
-            { new: true }
-          );
-          res.json(deletedVehicle);   
+// accept hires
 
-    } catch (error) {
-        res.send(error)
-    }
-}
+exports.acceptHires = async (req, res) => {
+  const pageHire = await hireSchema.carHireModel.findOne({
+    hId: req.params.hId,
+  });
+  const vehicle = await vehicleSchema.vehicleModel.findOne({
+    vId: pageHire.vId,
+  });
+  const checkPage = await pageSchema.pageModel.findOne({ pId: vehicle.pId });
+  const checkUser = await userSchema.userModel.findOne({ uId: checkPage.uId });
+  const checkUserPage = checkUser.uId == req.user.uId;
 
+  if (!checkUserPage) {
+   return res.status(401).send("user not authorized");
+  }
+
+  const accept = await hireSchema.carHireModel.findOneAndUpdate(
+    { hId: req.params.hId },
+    {
+      $set: {
+        isAccept: "1",
+        acceptAmount: req.body.price,
+        acceptTime: utcTimestamp,
+      },
+    },
+    {new: true}
+  );
+  res.json(accept);
+};
