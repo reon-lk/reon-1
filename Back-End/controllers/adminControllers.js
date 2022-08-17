@@ -10,7 +10,7 @@ const { hashValidator } = require("../helpers/hashing");
 const { tokenGenerator } = require("../helpers/token");
 
 const mainId = "7777";
-const utcTimestamp = new Date().getTime();
+
 
 // logout http request
 exports.logout = (req, res) => {
@@ -33,6 +33,7 @@ exports.createUser = async (req, res) => {
     const existingUser = await userSchema.userModel.findOne({
       email: req.body.email,
     });
+
     if (existingUser) {
       res.send(`Email address already exists!`);
     } else {
@@ -64,6 +65,7 @@ exports.createUser = async (req, res) => {
 exports.blockUser = async (req, res) => {
   try {
     const user = await userSchema.userModel.findOne({ uId: req.params.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!user) {
       res.status(401).send("user not found");
@@ -96,6 +98,7 @@ exports.blockUser = async (req, res) => {
 exports.userUnblock = async (req, res) => {
   try {
     const user = await userSchema.userModel.findOne({ uId: req.params.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!user) {
       res.status(401).send("user not found");
@@ -127,6 +130,7 @@ exports.userUnblock = async (req, res) => {
 
 exports.getPage = async (req, res) => {
   const pages = await pageSchema.pageModel.find();
+  
 
   res.json(pages);
 };
@@ -136,6 +140,7 @@ exports.createPage = async (req, res) => {
   try {
     const user = await userSchema.userModel.findOne({ uId: req.params.uId });
     const page = await pageSchema.pageModel.findOne({ uId: user.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!user) {
       res.status(401).send("user not found");
@@ -182,6 +187,7 @@ exports.blockPage = async (req, res) => {
   try {
     const page = await pageSchema.pageModel.findOne({ pId: req.params.pId });
     const user = await userSchema.userModel.findOne({ uId: page.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!user) {
       res.status(401).send("user not found");
@@ -223,6 +229,7 @@ exports.pageUnblock = async (req, res) => {
   try {
     const page = await pageSchema.pageModel.findOne({ pId: req.params.pId });
     const user = await userSchema.userModel.findOne({ uId: page.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!user) {
       res.status(401).send("user not found");
@@ -272,6 +279,7 @@ exports.addVehicle = async (req, res) => {
   try {
     const page = await pageSchema.pageModel.findOne({ pId: req.params.pId });
     const user = await userSchema.userModel.findOne({ uId: page.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!user) {
       res.status(401).send("user not found");
@@ -323,6 +331,7 @@ exports.updateVehicle = async (req, res) => {
     });
     const page = await pageSchema.pageModel.findOne({ pId: vehicle.pId });
     const user = await userSchema.userModel.findOne({ uId: page.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!user) {
       res.status(401).send("user not found");
@@ -387,6 +396,7 @@ exports.deleteVehicle = async (req, res) => {
     });
     const page = await pageSchema.pageModel.findOne({ pId: vehicle.pId });
     const user = await userSchema.userModel.findOne({ uId: page.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!user) {
       res.status(401).send("user not found");
@@ -440,6 +450,7 @@ exports.blockVehicle = async (req, res) => {
     });
     const page = await pageSchema.pageModel.findOne({ pId: vehicle.pId });
     const user = await userSchema.userModel.findOne({ uId: page.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!user) {
       res.status(401).send("user not found");
@@ -488,6 +499,7 @@ exports.vehicleUnblock = async (req, res) => {
     });
     const page = await pageSchema.pageModel.findOne({ pId: vehicle.pId });
     const user = await userSchema.userModel.findOne({ uId: page.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!user) {
       res.status(401).send("user not found");
@@ -583,6 +595,7 @@ exports.approvePendingPage = async (req, res) => {
   try {
     const page = await pageSchema.pageModel.findOne({ pId: req.params.pId });
     const user = await userSchema.userModel.findOne({ uId: page.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!user) {
       res.status(401).send("user not found");
@@ -635,6 +648,7 @@ exports.approvePendingVehicle = async (req, res) => {
     });
     const page = await pageSchema.pageModel.findOne({ pId: vehicle.pId });
     const user = await userSchema.userModel.findOne({ uId: page.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!user) {
       res.status(401).send("user not found");
@@ -698,6 +712,7 @@ exports.updateUserUpdatedVehicle = async (req, res) => {
     });
     const page = await pageSchema.pageModel.findOne({ pId: vehicle.pId });
     const user = await userSchema.userModel.findOne({ uId: page.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!user) {
       res.status(401).send("user not found");
@@ -716,7 +731,7 @@ exports.updateUserUpdatedVehicle = async (req, res) => {
     } else if (vehicle.statuses == 0) {
       res.send("vehicle is not approved");
     } else if (vehicle.statuses == 1) {
-      res.send("vehicle is  approved");
+      res.send("vehicle is not updated");
     } else if (vehicle.statuses == 4) {
       res.send("vehicle is deleted");
     } else if (vehicle.statuses == 2) {

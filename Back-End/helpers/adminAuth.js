@@ -16,17 +16,17 @@ const adminAuth = async (req, res, next) => {
     });
 
     if (!validUser) {
-      res.status(401).send("Access denied");
+      return res.status(401).send("Access denied");
     } else if (existingAdmin.statuses == 2) {
-      res.status(401).send("Your account is blocked!");
+      return res.status(401).send("Your account is blocked!");
       // return("Your account is blocked!"); // redirect to home (/)
     } else if (existingAdmin.role == 0) {
-      res.status(401).send("Access denied"); // redirect to home (/)
+      return res.status(401).send("Access denied"); // redirect to home (/)
     } else {
-      req.admin = existingAdmin;
+       req.admin = existingAdmin;
     }
 
-    req.admin = existingAdmin;
+    
     next();
   } catch (error) {
     console.log(error);

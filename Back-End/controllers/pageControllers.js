@@ -6,7 +6,7 @@ const vehicleSchema = require("../models/vehicleSchema");
 const hireSchema = require("../models/hireSchema");
 
 const mainId = "7777";
-const utcTimestamp = new Date().getTime();
+
 
 // Get page
 exports.getPage = async (req, res) => {
@@ -15,9 +15,65 @@ exports.getPage = async (req, res) => {
   try {
     const vehicles = await vehicleSchema.vehicleModel.find({
       pId: page.pId,
-      statuses: 1,
+      statuses: {$in:[1,3]},
+      
     });
     res.json(vehicles);
+  } catch (error) {
+    res.send(error);
+  }
+};
+
+// create myPage http request
+exports.createMyPage = async (req, res) => {
+  try {
+  
+    
+    const checkPage = await userSchema.userModel.findOne({
+      uId: req.user.uId,
+    });
+    const utcTimestamp = new Date().getTime();
+    if (checkPage.isPage == 1) {
+      res.send("You are already have a reon page!");
+    } else {
+      const existingPage = await pageSchema.pageModel.findOne({
+        phone: req.body.phone,
+      });
+      if (existingPage) {
+        res.send("Phone no already exists!");
+      } else {
+      
+        const page = new pageSchema.pageModel({
+          pId: mainId + utcTimestamp,
+          uId: req.user.uId,
+          pageName: req.body.pageName,
+          phone: req.body.phone,
+          address: req.body.address,
+          link: mainId + utcTimestamp,
+          statuses: "0",
+          statusComment: "Page Created",
+          createDate: utcTimestamp,
+          updateDate: utcTimestamp,
+          tempPageName: req.body.pageName,
+          tempPhone: req.body.phone,
+          tempAddress: req.body.address,
+          tempLink: mainId + utcTimestamp,
+        });
+
+        page.save();
+        userSchema.userModel.findOneAndUpdate(
+          { uId: req.user.uId },
+          { $set: { isPage: "1", updateDate: utcTimestamp } },
+          { new: true },
+          (err, doc) => {
+            res.send(
+              `Your page create successfull! Please wait for admin approval`
+            ); // redirect to hire page (/hire)
+            // res.send('This is !');
+          }
+        );
+      }
+    }
   } catch (error) {
     res.send(error);
   }
@@ -28,6 +84,7 @@ exports.getPage = async (req, res) => {
 exports.addVehicle = async (req, res) => {
   try {
     const page = await pageSchema.pageModel.findOne({ uId: req.user.uId });
+    const utcTimestamp = new Date().getTime();
 
     const vehicle = await vehicleSchema.vehicleModel.create({
       vId: mainId + utcTimestamp,
@@ -62,6 +119,7 @@ exports.updateVehicle = async (req, res) => {
       vId: req.params.vId,
     });
     const page = await pageSchema.pageModel.findOne({ uId: req.user.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!vehicle) {
       res.send("Vehicle not found");
@@ -104,6 +162,7 @@ exports.deleteVehicle = async (req, res) => {
       vId: req.params.vId,
     });
     const page = await pageSchema.pageModel.findOne({ uId: req.user.uId });
+    const utcTimestamp = new Date().getTime();
 
     if (!vehicle) {
       res.send("Vehicle not found");
@@ -135,8 +194,11 @@ exports.deleteVehicle = async (req, res) => {
 };
 
 exports.hireRequests = async (req, res) => {
-  // const page = await pageSchema.pageModel.findOne({ uId: req.user.uId });
-  const allHires = await hireSchema.carHireModel.find({ pId: req.page.pId });
+  const page = await pageSchema.pageModel.findOne({uId: req.user.uId})
+  const allHires = await hireSchema.carHireModel.find({ pId: page.pId });
+  if(!allHires) {
+    res.send("not found")
+  }
   res.send(allHires);
 };
 
@@ -152,6 +214,7 @@ exports.acceptHires = async (req, res) => {
   const checkPage = await pageSchema.pageModel.findOne({ pId: vehicle.pId });
   const checkUser = await userSchema.userModel.findOne({ uId: checkPage.uId });
   const checkUserPage = checkUser.uId == req.user.uId;
+  const utcTimestamp = new Date().getTime();
 
   if (!checkUserPage) {
    return res.status(401).send("user not authorized");

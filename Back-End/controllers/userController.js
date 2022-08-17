@@ -94,78 +94,7 @@ exports.logout = (req, res) => {
   // res.redirect('/');
 };
 
-// check myPage Status http request
-exports.mypage = async (req, res) => {
-  try {
-    const ReonAuthJWT = req.cookies.ReonAuthJWT;
-    const checkUserVerify = await userVerify.userVerify2(ReonAuthJWT);
 
-    if (checkUserVerify.isPage == 1) {
-      res.send("You already have REON page!"); // redirect to user page for owner page (/user/myPage)
-    } else {
-      res.send(
-        "You don't have REON page! Go to '/myPage/create' for create new Page"
-      ); // redirect to create page for owner page (/mypage/create)
-      // res.redirect("/user/myPage/create");
-    }
-  } catch (error) {
-    res.send(error);
-  }
-};
-
-// create myPage http request
-exports.createMyPage = async (req, res) => {
-  try {
-    const ReonAuthJWT = req.cookies.ReonAuthJWT;
-    const checkUserVerify = await userVerify.userVerify2(ReonAuthJWT);
-    const checkPage = await userSchema.userModel.findOne({
-      uId: checkUserVerify.uId,
-    });
-    if (checkPage.isPage == 1) {
-      res.send("You are already have a reon page!");
-    } else {
-      const existingPage = await pageSchema.pageModel.findOne({
-        phone: req.body.phone,
-      });
-      if (existingPage) {
-        res.send("Phone no already exists!");
-      } else {
-        const uId = checkUserVerify.uId;
-        const page = new pageSchema.pageModel({
-          pId: mainId + utcTimestamp,
-          uId: checkUserVerify.uId,
-          pageName: req.body.pageName,
-          phone: req.body.phone,
-          address: req.body.address,
-          link: mainId + utcTimestamp,
-          statuses: "0",
-          statusComment: "Page Created",
-          createDate: utcTimestamp,
-          updateDate: utcTimestamp,
-          tempPageName: req.body.pageName,
-          tempPhone: req.body.phone,
-          tempAddress: req.body.address,
-          tempLink: mainId + utcTimestamp,
-        });
-
-        page.save();
-        userSchema.userModel.findOneAndUpdate(
-          { uId: checkUserVerify.uId },
-          { $set: { isPage: "1", updateDate: utcTimestamp } },
-          { new: true },
-          (err, doc) => {
-            res.send(
-              `Your page create successfull! Please wait for admin approval`
-            ); // redirect to hire page (/hire)
-            // res.send('This is !');
-          }
-        );
-      }
-    }
-  } catch (error) {
-    res.send(error);
-  }
-};
 
 // hire a vehicle http reques// all vehicles http request
 exports.vehicles = async (req, res) => {
@@ -173,52 +102,58 @@ exports.vehicles = async (req, res) => {
   res.send(allVehicles);
 };
 
-exports.vehicleByCategory = async (req, res) => {
-  let filter = {};
+// exports.vehicleByCategory = async (req, res) => {
+//   let filter = {};
 
-  if (req.query.category) {
-    filter = { vehicleType: req.query.vehicleType.split(",") };
-  }
+//   if (req.query.category) {
+//     filter = { category: req.query.category.split(",") };
+//   }
 
-  const vehicles = await vehicleSchema.vehicleModel.find({
-    category: filter,
-    statuses: "1",
-  });
+//   const vehicles = await vehicleSchema.vehicleModel.find({
+//     filter,
+//     statuses: "1",
+//   });
 
-  if (!vehicles) {
-    res.status(500).json({ sucess: false });
-  }
-  res.send(vehicles);
-};
+//   if (!vehicles) {
+//     res.status(500).json({ sucess: false });
+//   }
+//   res.send(vehicles);
+// };
 
 exports.vehicleByType = async (req, res) => {
   let filter = {};
 
-  if (req.query.vehicleType) {
-    filter = { vehicleType: req.query.vehicleType.split(",") };
+  try {
+    if (req.query.vehicleTypes) {
+      filter = req.query.vehicleTypes.split(",") ;
+    }
+  
+    const vehicles = await vehicleSchema.vehicleModel.find({
+      vehicleType:{$in:filter},
+      statuses: {$in:[1,3]},
+    });
+  
+    if (!vehicles) {
+      res.status(500).json({ sucess: false });
+    }
+    res.json(vehicles);
+  } catch (error) {
+    res.send(error)
   }
 
-  const vehicles = await vehicleSchema.vehicleModel.find({
-    vehicleType: filter,
-    statuses: "1",
-  });
-
-  if (!vehicles) {
-    res.status(500).json({ sucess: false });
-  }
-  res.send(vehicles);
+  
 };
 
 exports.vehicleByLocation = async (req, res) => {
   let filter = {};
 
   if (req.query.location) {
-    filter = { location: req.query.location.split(",") };
+    filter = req.query.location.split(",") 
   }
 
   const vehicles = await vehicleSchema.vehicleModel.find({
-    location: filter,
-    statuses: "1",
+    location: {$in:filter},
+    statuses: {$in:[1,3]},
   });
 
   if (!vehicles) {
@@ -227,15 +162,37 @@ exports.vehicleByLocation = async (req, res) => {
   res.send(vehicles);
 };
 
-// a vehicle http request
-exports.vehicle = async (req, res) => {
-  const vehicle = await pageSchema.vehicleModel.findOne({
-    vId: req.params.vId,
-    statuses: "1",
-  });
-  res.send(vehicle);
-};
+// filter
 
+exports.filter = async (req, res) => {
+  const filter = {}
+  const {category,vehicleType,location} = req.query;
+  
+
+  if (category) {
+    filter.category = category
+  }
+
+  if (vehicleType) {
+    filter.vehicleType = vehicleType
+  }
+
+  if (location) {
+    filter.location = location
+  }
+
+filter.statuses = {$in:[1,3]}
+
+  const vehicles = await vehicleSchema.vehicleModel.find(filter);
+
+  if(!vehicles){
+  res.status(500).send({sucess:false})
+  }
+  
+  res.json(vehicles)
+}
+
+// vehicle hire request
 exports.hireVehicles = async (req, res) => {
   const vehicle = await vehicleSchema.vehicleModel.findOne({
     vId: req.params.vId,
@@ -291,7 +248,7 @@ exports.confirmRequest = async (req, res) => {
     return res.status(401).send("user not authorized");
   }
 
-  const confirmHire = await hireSchema.carHireModel.findOne(
+  const confirmHire = await hireSchema.carHireModel.findOneAndUpdate(
     { hId: req.params.hId },
     {
       $set: {
@@ -301,4 +258,6 @@ exports.confirmRequest = async (req, res) => {
     },
     { new: true }
   );
+
+  res.json(confirmHire)
 };

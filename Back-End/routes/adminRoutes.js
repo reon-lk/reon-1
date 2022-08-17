@@ -87,4 +87,6 @@ router.patch(
   adminControllers.vehicleUnblock
 );
 
+router.get("/hire/", adminAuth, adminControllers.getHiredDetails)
+
 module.exports = router;
