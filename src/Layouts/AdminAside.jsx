@@ -9,7 +9,7 @@ const Aside = () => {
     <ul class="sidebar-nav" id="sidebar-nav">
 
       <li class="nav-item">
-        <a class="nav-link sk" href="/">
+        <a class="nav-link sk" href="/Admin">
           <i class="bi bi-grid"></i>
           <span>Dashboard</span>
         </a>

@@ -21,7 +21,7 @@ const Category = () => {
   </div>
 
   <div className="gallery">
-  <a href="Minibus">
+  <a href="VehicleDetails">
     <img src="assets/img/miniBus.jpeg" alt="Mini Bus" width="600" height="400"/>
   </a>
   <div className="desc">Mini Bus</div>
