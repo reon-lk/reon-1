@@ -12,7 +12,7 @@ const VehicleDetails = () => {
         <tr>
             <th>Heading</th>
             <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ullam, quae laudantium? Similique officia quidem eius sit officiis autem, id error! Debitis beatae ad distinctio qui maxime libero totam nostrum delectus?
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eligendi, ea totam ad dolorem officia odit excepturi tempora voluptatibus aliquid in itaque, nisi enim quibusdam. Maiores atque minus tenetur harum earum.
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eligendi, ea totam ad dolorem officia odit excepturi tempora voluptatibus aliquid in itaque, nisi enim quibusdam. Maiores atque minus tenetur harum earum..
             </td>
         </tr>
         <tr>
