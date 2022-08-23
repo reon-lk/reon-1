@@ -36,3 +36,24 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+
+
+
+.width{
+  width: 100%;
+ }
+ 
+ .btnYellow{
+   background-color: #fec54a;
+ }
+ 
+ .btnRed{
+   background-color: red;
+ }
+ 
+ .size{
+   font-size: large;
+ }

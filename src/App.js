@@ -1,24 +1,44 @@
-import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter, Routes , Route } from 'react-router-dom';
+import Dashboard from './Pages/Admin/Dashboard';
+import Users from './Pages/Admin/Users';
+import Pages from './Pages/Admin/Pages';
+import VehiclesBus from './Pages/Admin/Vehicles/Bus';
+import VehiclesCar from './Pages/Admin/Vehicles/Car';
+import HireBus from './Pages/Admin/Hires/Bus';
+import HireCar from './Pages/Admin/Hires/Car';
+import Profile from './Pages/Admin/Profile';
+import PageSetting from './Pages/Admin/PageSetting';
+import PageDetails from './Pages/Admin/PageDetails';
+import UserHeader from './Layouts/UserHeader';
+import Category from './Pages/User/VehiclePage/VehiclePage';
+import VehicleDetails from './Pages/User/VehiclePage/VehicleDetails';
 
-function App() {
+
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <BrowserRouter>
+      <Routes>
+      <Route exact path="/Admin" element={<Dashboard/>} />
+      <Route exact path="/Users" element={<Users/>} />
+      <Route exact path="/Pages" element={<Pages/>} />
+      <Route exact path="/VehiclesBus" element={<VehiclesBus/>} />
+      <Route exact path="/VehiclesCar" element={<VehiclesCar/>} />
+      <Route exact path="/HiresBus" element={<HireBus/>} />
+      <Route exact path="/HiresCar" element={<HireCar/>} />
+      <Route exact path="/Profile" element={<Profile/>} />
+      <Route exact path="/PageSetting" element={<PageSetting/>} />
+      <Route exact path="/PageDetails" element={<PageDetails/>} />
+      <Route exact path="/UserHeader" element={<UserHeader/>} />
+      <Route exact path="/VehiclePage" element={<Category/>} />
+      <Route exact path="/VehicleDetails" element={<VehicleDetails/>} />
+
+      </Routes>
+    </BrowserRouter>
+    
+    </>
   );
 }
 
