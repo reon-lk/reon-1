@@ -13,6 +13,7 @@ import PageDetails from './Pages/Admin/PageDetails';
 import UserHeader from './Layouts/UserHeader';
 import Category from './Pages/User/VehiclePage/VehiclePage';
 import VehicleDetails from './Pages/User/VehiclePage/VehicleDetails';
+import OwnerPage from './Pages/OwnerPage/OwnerPage';
 
 
 
@@ -34,6 +35,7 @@ const App = () => {
       <Route exact path="/UserHeader" element={<UserHeader/>} />
       <Route exact path="/VehiclePage" element={<Category/>} />
       <Route exact path="/VehicleDetails" element={<VehicleDetails/>} />
+      <Route exact path="/OwnerPage" element={<OwnerPage/>} />
 
       </Routes>
     </BrowserRouter>
