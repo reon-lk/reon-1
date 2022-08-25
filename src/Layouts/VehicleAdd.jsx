@@ -113,7 +113,26 @@ const VehicleAdd = () => {
           </div>
 
           <div>Documentation</div>
-          
+          <div class="col-md-6">
+            <label for="vehicleBook" class="form-label">Vehicle Book</label>
+            <input type="file" class="form-control" id="vehicleBook"/>
+          </div>
+
+          <div class="col-md-6">
+            <label for="numberPlate" class="form-label">Number Plate</label>
+            <input type="file" class="form-control" id="numberPlate"/>
+          </div>
+
+          <div class="col-md-6">
+            <label for="insurenceAndTax" class="form-label">Insurence and Tax</label>
+            <input type="file" class="form-control" id="insurenceAndTax"/>
+          </div>
+
+          <div class="col-md-6">
+            <label for="3rdPartyInsrence" class="form-label">3rd Party Insurence</label>
+            <input type="file" class="form-control" id="3rdPartyInsrence"/>
+          </div>
+
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button  type="submit" class="btn btn-warning theme-bg-orange theme-bg-blue">VehicleAdd</button>
