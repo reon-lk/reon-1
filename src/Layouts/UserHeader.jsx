@@ -1,7 +1,10 @@
 import React from 'react'
-import Signup from './Signup';
-import Login from './Login';
+// import Signup from './Signup';
+// import Login from './Login';
 import Notification from './Notification';
+import Signup1 from './Signup1';
+import Login1 from './Login1';
+// import Notification1 from './Notification1';
 
 const UserHeader = () => {
   return (
@@ -21,8 +24,10 @@ const UserHeader = () => {
   
       <nav className="header-nav ms-auto">
         <ul className="d-flex align-items-center">
-    <Login/>
-    <Signup/>
+    <div style={{paddingTop:"25px"}}>
+      <Login1/>
+      <Signup1/>
+    </div>
   
     <Notification/>
   

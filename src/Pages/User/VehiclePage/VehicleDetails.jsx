@@ -2,6 +2,7 @@ import React from 'react'
 import UserHeader from '../../../Layouts/UserHeader'
 import Dropdown from 'react-bootstrap/Dropdown';
 import Footer from '../../../Layouts/Footer';
+import Booking from '../../../Layouts/Booking';
 
 
 const VehicleDetails = () => {
@@ -9,7 +10,7 @@ const VehicleDetails = () => {
     <>
     <UserHeader/>
 
-<main style={{paddingLeft:"40px"}}>
+<main style={{paddingLeft:"40px",paddingTop:"65px"}}>
         <div className='row'>
             <div className='col-lg-5'>
                 <div className='card size' style={{width:"550px"}}>
@@ -19,7 +20,8 @@ const VehicleDetails = () => {
                     Lorem ipsum dolor sit, amet consectetur adipisicing elit. In fuga saepe, blanditiis sit eaque corrupti dolorum assumenda numquam, magnam similique quibusdam a voluptatum, iure officia dignissimos. Dolorum numquam ipsum ratione?
                     Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nostrum, in impedit et quae pariatur facilis similique odit repellendus quos voluptates asperiores obcaecati animi non deleniti, commodi dolores consectetur iste. Delectus.<br/>
                     <div style={{paddingLeft:"160px"}}>
-                    <button type="button" class="btn btn-warning">BookNow</button>
+                    {/* <button type="button" class="btn btn-warning">BookNow</button> */}
+                    <Booking/>
                     </div>
                     </div>
                 </div>
