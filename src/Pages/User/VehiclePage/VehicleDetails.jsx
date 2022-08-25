@@ -31,7 +31,7 @@ const VehicleDetails = () => {
                 <img src='assets/img/Transperth_Volgren_CR228L_bodied_Volvo_B7RLE.jpg' alt='logo' style={{paddingRight:"40px"}}/>
                 <Dropdown style={{paddingLeft:"300px"}}>
                     <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        Dropdown Button
+                        Prices
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
@@ -53,8 +53,8 @@ const VehicleDetails = () => {
             </div>
             <div class="col-md-8">
             <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                <h5 class="card-title">Company/Owner Details</h5>
+                <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor placeat, reprehenderit, aut dolorum cupiditate accusantium ut minima quasi laborum distinctio praesentium. Adipisci, ullam ipsum minima obcaecati voluptates quas! Eius, qui!</p>
                 <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                 </div>
             </div>
